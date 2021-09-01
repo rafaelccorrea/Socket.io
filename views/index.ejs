@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Chat Interno</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+</head>
+<style>
+    #chat{
+        max-height: 500px;
+        min-height: 500px;
+        background-color: rgb(209, 214, 238);
+        overflow-y: scroll;
+    }
+</style>
+<br>
+
+    <h1 style="text-align: center">Chat Teste</h1>
+    <div id="chat" >
+    
+    </div><br>
+
+    <input type="text" name="" id="msg" class="form-control" placeholder="Message" /><br>
+    <input type="text" name="" id="username" placeholder="Seu Nome: " class="form-control"><br>
+    <button class="btn btn-success btn-lg btn-block" onclick="enviar()">Enviar</button>
+
+</body>
+<script src="/socket.io/socket.io.js"></script>
+<script>
+    let socket = io("http://localhost:8000");
+
+    socket.on("Disconnect", () => {
+        console.log("Desconectado!");
+    })
+
+    socket.on("showMessage", ( data )=> {
+        console.log(data)
+        let chat = document.getElementById("chat");
+        let p = document.createElement("p");
+        p.innerHTML = data.username + ": " + data.msg;
+        chat.append(p);
+
+    })
+
+    function enviar(){
+
+        let msgField = document.getElementById("msg");
+        let usernameField = document.getElementById("username");
+
+        let msg = msgField.value;
+        let username = usernameField.value;
+
+        socket.emit("msg", { msg, username});
+    }
+
+</script>
+</html>
